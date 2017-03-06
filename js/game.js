@@ -1,6 +1,3 @@
-/*jslint vars:true, devel:true, plusplus:true*/
-/*global Phaser*/
-
 var game;
 
 // main game options
@@ -9,82 +6,6 @@ var gameOptions = {
     gameHeight: 800,
     tileSize: 100
 };
-
-// game levels
-var levels = [
-    {
-        level: [
-            [1, 1, 1, 1],
-            [1, 0, 0, 1],
-            [1, 0, 0, 1],
-            [1, 1, 1, 1],
-        ],
-        playerPos: new Phaser.Point(0, 0)
-    },
-    {
-        level: [
-            [1, 1, 1, 1],
-            [1, 1, 1, 1],
-            [1, 1, 1, 1],
-            [1, 1, 1, 1]
-        ],
-        playerPos: new Phaser.Point(0, 0)
-    },
-    {
-        level: [
-            [1, 1, 1, 1, 1],
-            [1, 0, 0, 0, 1],
-            [1, 0, 1, 0, 1],
-            [1, 1, 2, 1, 1]
-        ],
-        playerPos: new Phaser.Point(2, 2)
-    },
-    {
-        level: [
-            [1, 1, 1, 0, 0],
-            [1, 0, 1, 0, 0],
-            [1, 1, 2, 1, 1],
-            [0, 0, 1, 0, 1],
-            [0, 0, 1, 1, 1],
-            [0, 0, 0, 0, 0]
-        ],
-        playerPos: new Phaser.Point(2, 0)
-    },
-    {
-        level: [
-            [1, 1, 2, 1, 1],
-            [1, 0, 1, 0, 1],
-            [1, 2, 2, 2, 1],
-            [0, 1, 0, 1, 0],
-            [0, 1, 1, 1, 0]
-        ],
-        playerPos: new Phaser.Point(2, 1)
-    },
-    {
-        level: [
-            [0, 1, 1, 1, 1, 1, 1],
-            [0, 1, 1, 1, 1, 1, 1],
-            [0, 0, 1, 1, 1, 1, 0],
-            [1, 1, 1, 1, 1, 1, 0],
-            [1, 1, 1, 1, 1, 1, 0],
-            [0, 0, 0, 0, 1, 1, 0],
-            [0, 0, 0, 0, 0, 0, 0]
-        ],
-        playerPos: new Phaser.Point(4, 1)
-    },
-    {
-        level: [
-            [0, 0, 0, 0, 1, 1, 1, 1],
-            [1, 1, 0, 0, 1, 1, 1, 1],
-            [1, 1, 2, 2, 1, 1, 1, 0],
-            [1, 1, 2, 2, 1, 1, 1, 0],
-            [0, 0, 0, 0, 0, 2, 2, 0],
-            [0, 0, 0, 0, 0, 2, 2, 0],
-            [0, 0, 0, 0, 0, 1, 1, 0]
-        ],
-        playerPos: new Phaser.Point(4, 2)
-    }
-];
 
 // current level
 var levelNumber = 0;
@@ -297,7 +218,7 @@ TheGame.prototype = {
             } else {
                 if (tile.tileValue == 9) {
                     if (this.isLevelComplete()) {
-                        if (levelNumber < levels.length) {
+                        if (levelNumber < levels.length-1) {
                             levelNumber ++;
                             this.levelRestart();
                         } else {
@@ -341,9 +262,8 @@ TheGame.prototype = {
         }, this);
     },
     
-    // ----------------------------------------------------------------------------------------------------
-    
-    convert: function(array) {
+    // convert the tile array to a single array grid
+    convertToGrid: function(array) {
         var grid = [];
         for (var i = 0; i < this.rows; i++) {
             for (var j = 0; j < this.cols; j++) {
@@ -357,6 +277,7 @@ TheGame.prototype = {
         return grid;
     },
     
+    // "automatically" resolve the problem
     automata: function () {
         // remove other inputs
         game.input.onDown.remove(this.beginSwipe, this);
@@ -366,15 +287,16 @@ TheGame.prototype = {
         game.input.keyboard.removeKey(Phaser.Keyboard.RIGHT);
         game.input.keyboard.removeKey(Phaser.Keyboard.SPACE);
         
-        //
-        var grid = this.convert(this.tilesArray);
+        // convert variables
+        var grid = this.convertToGrid(this.tilesArray);
         var startPosition = new Phaser.Point(0, 0);
         levels[levelNumber].playerPos.clone(startPosition);
         
-        //
+        // make the search
         var path = AI.ast(grid, this.playerPosition, startPosition, {cols:this.cols, rows:this.rows});
         console.log(path);
         
+        // move the character
         if (path) {
             for (var i = 0; i < path.length; i++) {
                 if (path[i] == 'up') {

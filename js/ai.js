@@ -1,20 +1,16 @@
-/*jslint vars:true, devel:true, plusplus:true*/
-
 var AI = {
     
     // depth-first search
     dfs: function (grid, playerPosition, startPlayerPosition, size) {
 
         var start = this.getState(grid, playerPosition);
-        
         var frontier = [start.id];
-        var explored = {[start.id]: false};
         var data = {[start.id]: start};
         
         while (frontier.length > 0) {
             
             var current = data[frontier.pop()]
-            explored[current.id] = true;
+            current.explored = true;
             
             var total = this.getTotal(current.grid);
             if (total == 0) {
@@ -24,7 +20,7 @@ var AI = {
             var neighbors = this.getNeighbors(current.grid, current.position, startPlayerPosition, size);
             for (var i = 0; i < neighbors.length; i++) {
                 var neighbor = neighbors[i];
-                if (data[neighbor.id] === undefined && explored[neighbor.id] === undefined) {
+                if (data[neighbor.id] === undefined || data[neighbor.id].explored === undefined) {
                     neighbor.parent = current;
                     frontier.push(neighbor.id);
                     data[neighbor.id] = neighbor;
@@ -34,6 +30,7 @@ var AI = {
         return false;
     },
     
+    // a-star search (a*)
     ast: function (grid, playerPosition, startPlayerPosition, size) {
         
         var start = this.getState(grid, playerPosition);
@@ -43,8 +40,6 @@ var AI = {
         frontier.queue(start);
         var costSoFar = {[start.id]: 0};
         
-        this.debug(start.grid, size);
-         
         while (frontier.length > 0) {
             current = frontier.dequeue();
              
@@ -70,6 +65,7 @@ var AI = {
         }
     },
     
+    // return a new state
     getState: function (grid, position) {
         return {
             id: this.getId(grid, position),
@@ -79,7 +75,7 @@ var AI = {
         };
     },
     
-    //
+    // return the total of tiles remained
     getTotal: function (grid) {
         var sum = 0;
         for (var i = 0; i < grid.length; i++) {
@@ -90,7 +86,7 @@ var AI = {
         return sum;
     },
     
-    //
+    // return the id from position + player position
     getId: function (grid, pos) {
         var id = "(" + pos.x + "," + pos.y + ") ";
         for (var i = 0; i < grid.length; i++) {
@@ -99,8 +95,9 @@ var AI = {
         return id;
     },
     
+    // return if column and row is in grid bounds
     inBounds: function (node, size) {
-        return node.row >= 0 && node.row < size.rows && node.row >= 0 && node.col < size.cols;
+        return node.row >= 0 && node.row < size.rows && node.col >= 0 && node.col < size.cols;
     },
     
     // get all neighbors and filter them
@@ -126,6 +123,7 @@ var AI = {
         return neighbors;
     },
     
+    // return the directions to resolve the grid
     reconstructPath: function (start, goal) {
         var current = goal;
         var path = [];
