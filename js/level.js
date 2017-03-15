@@ -2,12 +2,21 @@
 var levels = [
     {
         level: [
+            [1, 1, 1, 1, 1, 1],
+        ],
+        playerPos: new Phaser.Point(0, 0),
+        finalPos: new Phaser.Point(5, 0),
+        message: "Sometimes I move on and I can't go back..."
+    },
+        {
+        level: [
             [1, 1, 1, 1],
             [1, 0, 0, 1],
             [1, 0, 0, 1],
             [1, 1, 1, 1],
         ],
-        playerPos: new Phaser.Point(0, 0)
+        playerPos: new Phaser.Point(0, 0),
+        message: "But I walk around without leaving the place."
     },
     {
         level: [
@@ -16,7 +25,8 @@ var levels = [
             [1, 1, 1, 1],
             [1, 1, 1, 1]
         ],
-        playerPos: new Phaser.Point(0, 0)
+        playerPos: new Phaser.Point(0, 0),
+        message: "Since that you left me I feel the ground fall below my feet."
     },
     {
         level: [
@@ -25,7 +35,8 @@ var levels = [
             [1, 0, 1, 0, 1],
             [1, 1, 2, 1, 1]
         ],
-        playerPos: new Phaser.Point(2, 2)
+        playerPos: new Phaser.Point(2, 2),
+        message: "I think that everything happens for a reason..."
     },
     {
         level: [
@@ -36,7 +47,19 @@ var levels = [
             [0, 0, 1, 1, 1],
             [0, 0, 0, 0, 0]
         ],
-        playerPos: new Phaser.Point(2, 0)
+        playerPos: new Phaser.Point(2, 0),
+        message: "But I don't know why!"
+    },
+    {
+        level: [
+            [1, 1, 1, 0, 1, 1, 1],
+            [1, 0, 1, 0, 1, 0, 1],
+            [1, 1, 2, 1, 2, 1, 1],
+            [0, 0, 1, 0, 1, 0, 0],
+            [0, 0, 1, 1, 1, 0, 0],
+        ],
+        playerPos: new Phaser.Point(0, 2),
+        message: "Our paths were crossed in the past."
     },
     {
         level: [
@@ -46,7 +69,8 @@ var levels = [
             [0, 1, 0, 1, 0],
             [0, 1, 1, 1, 0]
         ],
-        playerPos: new Phaser.Point(2, 1)
+        playerPos: new Phaser.Point(2, 1),
+        message: "It can get hard sometimes."
     },
     {
         level: [
@@ -58,7 +82,8 @@ var levels = [
             [0, 0, 0, 0, 1, 1, 0],
             [0, 0, 0, 0, 0, 0, 0]
         ],
-        playerPos: new Phaser.Point(4, 1)
+        playerPos: new Phaser.Point(4, 1),
+        message: "Don't matter it wherever I go..."
     },
     {
         level: [
@@ -70,6 +95,7 @@ var levels = [
             [0, 0, 0, 0, 0, 2, 2, 0],
             [0, 0, 0, 0, 0, 1, 1, 0]
         ],
-        playerPos: new Phaser.Point(4, 2)
+        playerPos: new Phaser.Point(4, 2),
+        message: "I'm looking for you!"
     }
 ];

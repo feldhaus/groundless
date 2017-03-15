@@ -55,35 +55,61 @@ TheGame.prototype = {
 
     // function to create a level
     createLevel: function () {
+        // get level parameters
         var currentLevel = levels[levelNumber];
         this.cols = currentLevel.level[0].length;
         this.rows = currentLevel.level.length;
         
+        // create tile array and tile group
         this.tilesArray = [];
         this.tileGroup = game.add.group();
         this.tileGroup.x = (game.width - gameOptions.tileSize * this.cols) / 2;
         this.tileGroup.y = (game.height -  gameOptions.tileSize * this.rows) / 2;
         
+        // add tiles
         for (var i = 0; i < this.rows; i++) {
             this.tilesArray[i] = [];
             for (var j = 0; j < this.cols; j++) {
                 if (currentLevel.level[i][j] !== 0) {
-                    this.addTile(i, j, levels[levelNumber].level[i][j]);
+                    this.addTile(i, j, currentLevel.level[i][j]);
                 }
             }
         }
         
+        // add player
         this.playerPosition = new Phaser.Point(0, 0);
-        levels[levelNumber].playerPos.clone(this.playerPosition);
-        var tilePos = this.getTilePosition(levels[levelNumber].playerPos.y, levels[levelNumber].playerPos.x);
-        this.tilesArray[this.playerPosition.y][this.playerPosition.x].frame = 90;
+        currentLevel.playerPos.clone(this.playerPosition);
+        var tilePos = this.getTilePosition(currentLevel.playerPos.y, currentLevel.playerPos.x);
         this.player = game.add.sprite(tilePos.x, tilePos.y, 'tiles');
         this.player.width = gameOptions.tileSize;
         this.player.height = gameOptions.tileSize;
         this.player.frame = 65;
         this.player.anchor.set(0.5);
         this.tileGroup.add(this.player);
-        this.firstMove = true;
+        
+        // get and set the final tile
+        this.finalPosition = new Phaser.Point(0, 0);
+        var finalTile;
+        if (currentLevel.finalPos) {
+            currentLevel.finalPos.clone(this.finalPosition);
+            finalTile = this.getTile(this.finalPosition.y, this.finalPosition.x);
+            this.firstMove = false;
+        } else {
+            currentLevel.playerPos.clone(this.finalPosition);
+            finalTile = this.getTile(this.playerPosition.y, this.playerPosition.x);
+            this.firstMove = true;
+        }
+        finalTile.frame = 90;
+        finalTile.tileValue = 9;
+        
+        // show message
+        if (currentLevel.message) {
+            var style = { font: "28px Arial", fill: "#ffffff", align: "center" };
+            var text = game.add.text(game.world.centerX, game.world.height - 20, currentLevel.message, style);
+            text.anchor.set(0.5, 1);
+            text.alpha = 0.0;
+            game.add.tween(text).to( { alpha: 1 }, 2000, "Linear", true);
+        }
 	},
 
     // function add a tile at "row" row, "col" column with "val" value
@@ -181,7 +207,6 @@ TheGame.prototype = {
         
         if (this.firstMove) {
             this.firstMove = false;
-            tile.tileValue = 9;
         } else if (tile) {
             switch (tile.tileValue) {
                 case 1:
@@ -290,7 +315,7 @@ TheGame.prototype = {
         // convert variables
         var grid = this.convertToGrid(this.tilesArray);
         var startPosition = new Phaser.Point(0, 0);
-        levels[levelNumber].playerPos.clone(startPosition);
+        this.finalPosition.clone(startPosition);
         
         // make the search
         var path = AI.ast(grid, this.playerPosition, startPosition, {cols:this.cols, rows:this.rows});
