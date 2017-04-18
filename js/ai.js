@@ -1,7 +1,8 @@
 var AI = {
     
     // depth-first search
-    dfs: function (grid, playerPosition, startPlayerPosition, size) {
+    /*
+    dfs: function (grid, playerPosition, targetPosition, size) {
 
         var start = this.getState(grid, playerPosition);
         var frontier = [start.id];
@@ -17,7 +18,7 @@ var AI = {
                 return this.reconstructPath(start, current);
             }
             
-            var neighbors = this.getNeighbors(current.grid, current.position, startPlayerPosition, size);
+            var neighbors = this.getNeighbors(current.grid, current.position, targetPosition, size);
             for (var i = 0; i < neighbors.length; i++) {
                 var neighbor = neighbors[i];
                 if (data[neighbor.id] === undefined || data[neighbor.id].explored === undefined) {
@@ -29,9 +30,10 @@ var AI = {
         }
         return false;
     },
+    */
     
     // a-star search (a*)
-    ast: function (grid, playerPosition, startPlayerPosition, size) {
+    ast: function (grid, playerPosition, targetPosition, size) {
         
         var start = this.getState(grid, playerPosition);
         start.priority = 0;
@@ -44,11 +46,12 @@ var AI = {
             current = frontier.dequeue();
              
             var total = this.getTotal(current.grid);
-            if (total === 0) {
+            //console.log(total,'=',current.position.x,current.position.y,'/',targetPosition.x,targetPosition.y);
+            if (total === 0 && current.position.x === targetPosition.x && current.position.y === targetPosition.y) {
                 return this.reconstructPath(start, current);
             }
              
-            var neighbors = this.getNeighbors(current.grid, current.position, startPlayerPosition, size);
+            var neighbors = this.getNeighbors(current.grid, current.position, targetPosition, size);
             for (var i = 0; i < neighbors.length; i++) {
                  
                 var newCost = costSoFar[current.id] + 1;
@@ -113,10 +116,12 @@ var AI = {
         for (var i = 0; i < possible.length; i++) {
             var n = possible[i];
             
-            if (this.inBounds(n, size) && (grid[n.row * size.cols + n.col] > 0 || (n.row == startPosition.y && n.col == startPosition.x))) {
-                var clone = grid.slice(0);
-                clone[position.y * size.cols + position.x]--;
-                neighbors.push(this.getState(clone, new Phaser.Point(n.col, n.row)));
+            if (this.inBounds(n, size)) {
+                if ((grid[n.row * size.cols + n.col] > 0) || (n.row == startPosition.y && n.col == startPosition.x && this.getTotal(grid) === 1)) {
+                    var clone = grid.slice(0);
+                    clone[position.y * size.cols + position.x]--;
+                    neighbors.push(this.getState(clone, new Phaser.Point(n.col, n.row)));
+                }
             }
         }
         

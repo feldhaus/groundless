@@ -96,6 +96,29 @@ var levels = [
             [0, 0, 0, 0, 0, 1, 1, 0]
         ],
         playerPos: new Phaser.Point(4, 2),
-        message: "I'm looking for you!"
+        message: "I think this is never ending!"
+    },
+    {
+        level: [
+            [0, 1, 1, 0, 1, 1, 0],
+            [1, 1, 1, 1, 1, 1, 1],
+            [1, 2, 1, 1, 1, 2, 1],
+            [0, 1, 1, 1, 1, 1, 0],
+            [0, 0, 1, 2, 1, 0, 0],
+            [0, 0, 0, 1, 0, 0, 0]
+        ],
+        playerPos: new Phaser.Point(3, 2),
+        message: "But please, don't go breaking my heart!"
+    },
+    {
+        level: [
+            [1, 1, 1, 1, 1, 1, 1],
+            [1, 0, 1, 0, 1, 0, 1],
+            [2, 1, 2, 1, 2, 1, 2],
+            [1, 0, 1, 0, 1, 0, 1],
+            [1, 1, 2, 1, 1, 1, 1]
+        ],
+        playerPos: new Phaser.Point(3, 0),
+        message: "I hardly ever walk the floor and cry"
     }
 ];
