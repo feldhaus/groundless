@@ -96,7 +96,7 @@ var levels = [
             [0, 0, 0, 0, 0, 1, 1, 0]
         ],
         playerPos: new Phaser.Point(4, 2),
-        message: "I think this is never ending!"
+        message: "I'm looking for you!"
     },
     {
         level: [
