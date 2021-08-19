@@ -10,6 +10,8 @@ var gameOptions = {
 // current level
 var levelNumber = 0;
 
+var isPlayerMoving = false;
+
 // when the window finishes loading...
 window.onload = function () {
     game = new Phaser.Game(gameOptions.gameWidth, gameOptions.gameHeight);
@@ -38,9 +40,12 @@ TheGame.prototype = {
         
         // create level
         this.createLevel();
+
+        isPlayerMoving = false;
         
         // define inputs (touch and keyboard)
-        game.input.onDown.add(this.beginSwipe, this);
+        game.input.onUp.add(this.endSwipe, this);
+
         var keyUp = game.input.keyboard.addKey(Phaser.Keyboard.UP);
         keyUp.onDown.add(this.moveUp, this);
         var keyDown = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
@@ -148,16 +153,9 @@ TheGame.prototype = {
         }
         return this.tilesArray[row][col];
     },
-
-    // start checking for swipes
-    beginSwipe: function (event) {
-        game.input.onDown.remove(this.beginSwipe, this);
-        game.input.onUp.add(this.endSwipe, this);
-    },
      
     // end checking for swipes
     endSwipe: function (event) {
-        game.input.onUp.remove(this.endSwipe, this);
         var swipeTime = event.timeUp - event.timeDown;
         var swipeDistance = Phaser.Point.subtract(event.position, event.positionDown);
         var swipeMagnitude = swipeDistance.getMagnitude();
@@ -172,8 +170,6 @@ TheGame.prototype = {
             } else if (swipeNormal.x > 0.8) {
                 this.moveRight();
             }
-        } else {
-            game.input.onDown.add(this.beginSwipe, this);
         }
     },
     
@@ -203,6 +199,9 @@ TheGame.prototype = {
 
     // handling swipes
     handleMovement: function (position) {
+        if (isPlayerMoving) return;
+        isPlayerMoving = true;
+
         var tile = this.getTile(this.playerPosition.y, this.playerPosition.x);
         
         if (this.firstMove) {
@@ -256,7 +255,7 @@ TheGame.prototype = {
                         this.levelRestart();
                     }
                 } else {
-                    game.input.onDown.add(this.beginSwipe, this);;
+                    isPlayerMoving = false;
                 }
             }     
         }, this)  
@@ -305,7 +304,6 @@ TheGame.prototype = {
     // "automatically" resolve the problem
     automata: function () {
         // remove other inputs
-        game.input.onDown.remove(this.beginSwipe, this);
         game.input.keyboard.removeKey(Phaser.Keyboard.UP);
         game.input.keyboard.removeKey(Phaser.Keyboard.DOWN);
         game.input.keyboard.removeKey(Phaser.Keyboard.LEFT);
